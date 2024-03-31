@@ -1,35 +1,80 @@
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.stage.Screen;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.scene.layout.GridPane;
+
+import java.io.File;
 
 public class UI extends Application {
 
+    private TextField inputFileField;
+    private TextField outputFileField;
+
     @Override
     public void start(Stage primaryStage) {
+        primaryStage.setTitle("File Converter");
 
-        Group root = new Group();
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(20, 20, 20, 20));
+        grid.setVgap(10);
+        grid.setHgap(10);
 
-        Scene scene  = new Scene(root);
+        Label inputFileLabel = new Label("Input File:");
+        grid.add(inputFileLabel, 0, 0);
 
+        inputFileField = new TextField();
+        grid.add(inputFileField, 1, 0);
+
+        Button inputBrowseButton = new Button("Browse");
+        inputBrowseButton.setOnAction(this::browseInputFile);
+        grid.add(inputBrowseButton, 2, 0);
+
+        Label outputFileLabel = new Label("Output File:");
+        grid.add(outputFileLabel, 0, 1);
+
+        outputFileField = new TextField();
+        grid.add(outputFileField, 1, 1);
+
+        Button outputBrowseButton = new Button("Browse");
+        outputBrowseButton.setOnAction(this::browseOutputFile);
+        grid.add(outputBrowseButton, 2, 1);
+
+        Button convertButton = new Button("Convert");
+        convertButton.setOnAction(this::convertFile);
+        grid.add(convertButton, 1, 2);
+
+        Scene scene = new Scene(grid, 400, 150);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("File converter");
-        primaryStage.setWidth(800);
-        primaryStage.setHeight(600);
-        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
-    public static void main(String[] args) {
-        launch();
+    private void browseInputFile(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            inputFileField.setText(selectedFile.getAbsolutePath());
+        }
     }
 
+    private void browseOutputFile(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showSaveDialog(null);
+        if (selectedFile != null) {
+            outputFileField.setText(selectedFile.getAbsolutePath());
+        }
+    }
+
+    private void convertFile(ActionEvent event) {
+        // conerter
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
