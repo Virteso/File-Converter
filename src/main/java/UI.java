@@ -8,7 +8,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.io.File;
 
 public class UI extends Application {
@@ -71,7 +70,7 @@ public class UI extends Application {
     }
 
     private void convertFile(ActionEvent event) {
-        // conerter
+        // converter
     }
 
     public static void main(String[] args) {
