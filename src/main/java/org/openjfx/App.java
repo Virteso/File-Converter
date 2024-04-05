@@ -1,3 +1,5 @@
+package org.openjfx;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -10,7 +12,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.io.File;
 
-public class UI extends Application {
+public class App extends Application {
 
     private TextField inputFileField;
     private TextField outputFileField;
