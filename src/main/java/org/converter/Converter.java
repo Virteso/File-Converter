@@ -17,10 +17,7 @@ import net.sourceforge.tess4j.Tesseract;
 
 
 public class Converter {
-
-    public static void main(String[] args) {
-        PNGTextToPDFConverter("C:\\Users\\timur02\\Downloads\\images (1).png", "C:\\Users\\timur02\\Downloads\\ssss", "est");
-    }
+    
     public static void pdfImage(String inputPath, String outputPath) {
         try {
             PDDocument document = Loader.loadPDF(new File(inputPath));
@@ -53,7 +50,7 @@ public class Converter {
             PDPageContentStream contentStream = new PDPageContentStream(document, page);
             contentStream.beginText();
             PDType1Font font = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
-            contentStream.setFont(font, 10);
+            contentStream.setFont(font, 12);
             contentStream.newLineAtOffset(50, 700);
             String[] lines = text.split("\\r?\\n");
             float leading = 15;
