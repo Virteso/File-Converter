@@ -18,7 +18,7 @@ import net.sourceforge.tess4j.Tesseract;
 
 public class Converter {
     
-    public static void pdfImage(String inputPath, String outputPath) {
+    public static void PDFToPNG(String inputPath, String outputPath) {
         try {
             PDDocument document = Loader.loadPDF(new File(inputPath));
             PDFRenderer pdfRenderer = new PDFRenderer(document);
