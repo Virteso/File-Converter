@@ -110,7 +110,7 @@ public class App extends Application {
                         Converter.PDFToPNG(inputFilePath, outputFilePath);
                         break;
                     case "Text":
-                        // add pdf to text
+                        Converter.PDFtoText(inputFilePath, outputFilePath);
                         break;
                     case "CSV":
                         Converter.extractPDFspreadsheets(inputFilePath, outputFilePath);
@@ -143,6 +143,14 @@ public class App extends Application {
                 switch (outputFormat) {
                     case "PDF":
                         Converter.PNGTextToPDFConverter(inputFilePath, outputFilePath, "est");
+                        break;
+                    default:
+                        break;
+                }
+            case "Text":
+                switch (outputFormat) {
+                    case "PDF":
+                        Converter.textToPdf(inputFilePath, outputFilePath);
                         break;
                     default:
                         break;

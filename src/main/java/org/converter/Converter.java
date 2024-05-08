@@ -20,6 +20,53 @@ import org.apache.pdfbox.text.PDFTextStripper;
 
 public class Converter {
 
+    public static void textToPdf(String inputpath, String outputpath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputpath));
+             PDDocument document = new PDDocument()) {
+            File output = new File(outputpath);
+            if (!output.exists()) output.mkdirs();
+            PDPage page = new PDPage();
+            document.addPage(page);
+
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            PDType1Font font = new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN);
+            contentStream.setFont(font, 12);
+
+            String line;
+            float y = page.getMediaBox().getHeight() - 20;
+            while ((line = reader.readLine()) != null) {
+                contentStream.beginText();
+                contentStream.newLineAtOffset(20, y);
+                contentStream.showText(line);
+                contentStream.endText();
+                y -= 15;
+            }
+            contentStream.close();
+            document.save(outputpath + File.separator + "output.pdf");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void PDFtoText(String inputpath, String outputpath) {
+        File pdf = new File(inputpath);
+
+        try (PDDocument document = Loader.loadPDF(pdf)) {
+            PDFTextStripper textStripper = new PDFTextStripper();
+            String text = textStripper.getText(document);
+
+            File output = new File(outputpath);
+            if (!output.exists()) output.mkdir();
+            File outputFile = new File(output, "output.txt");
+            try (Writer writer = new FileWriter(outputFile)) {
+                writer.write(text);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
     public static void SCVtoPDF(String inputpath, String outputpath) {
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(inputpath));
