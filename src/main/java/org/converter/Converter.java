@@ -19,6 +19,7 @@ import net.sourceforge.tess4j.Tesseract;
 import org.apache.pdfbox.text.PDFTextStripper;
 
 public class Converter {
+    
 
     public static void textToPdf(String inputpath, String outputpath) {
         try (BufferedReader reader = new BufferedReader(new FileReader(inputpath));
@@ -220,7 +221,7 @@ public class Converter {
     public static void PNGTextToPDFConverter(String inputPath, String outputPath, String language) {
         try {
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath("File-Converter/src/main/resources/tessdata");
+            tesseract.setDatapath("src/main/resources/tessdata");
             tesseract.setLanguage(language);
 
             String text = tesseract.doOCR(new File(inputPath));
