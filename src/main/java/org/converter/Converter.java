@@ -10,7 +10,7 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Arrays;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +21,7 @@ import org.apache.pdfbox.text.PDFTextStripper;
 public class Converter {
     
 
-    public static void textToPdf(String inputpath, String outputpath) {
+    public static void textToPdf(String inputpath, String outputpath) throws Exception{
         try (BufferedReader reader = new BufferedReader(new FileReader(inputpath));
              PDDocument document = new PDDocument()) {
             File output = new File(outputpath);
@@ -45,11 +45,11 @@ public class Converter {
             contentStream.close();
             document.save(outputpath + File.separator + "output.pdf");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            throw e;
         }
     }
 
-    public static void PDFtoText(String inputpath, String outputpath) {
+    public static void PDFtoText(String inputpath, String outputpath) throws Exception{
         File pdf = new File(inputpath);
 
         try (PDDocument document = Loader.loadPDF(pdf)) {
@@ -65,10 +65,10 @@ public class Converter {
                 System.out.println(e.getMessage());
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            throw e;
         }
     }
-    public static void SCVtoPDF(String inputpath, String outputpath) {
+    public static void SCVtoPDF(String inputpath, String outputpath) throws Exception{
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(inputpath));
 
@@ -151,8 +151,8 @@ public class Converter {
                 }
                 //contentStream.lineTo(x - 5, y - font.getHeight(0) * cells.length - 5);
                 //contentStream.stroke();
-                //contentStream.moveTo(45, y - font.getHeight(0) * cells.length - 5); // Move to the starting point of the line
-                //contentStream.lineTo(x - 65, y - font.getHeight(0) * cells.length - 5); // Draw the line
+                //contentStream.moveTo(45, y - font.getHeight(0) * cells.length - 5);
+                //contentStream.lineTo(x - 65, y - font.getHeight(0) * cells.length - 5);
                 //contentStream.stroke();
                 y -= 20;
 
@@ -167,10 +167,10 @@ public class Converter {
 
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw e;
         }
     }
-    public static void extractPDFspreadsheets (String inputpath, String outputpath) {
+    public static void extractPDFspreadsheets (String inputpath, String outputpath) throws Exception{
         try (PDDocument document = Loader.loadPDF(new File(inputpath))){
             PDFTextStripper pdfStripper = new PDFTextStripper();
             File output = new File(outputpath);
@@ -189,15 +189,15 @@ public class Converter {
                     writer.newLine();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                throw e;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw e;
         }
 
     }
     
-    public static void PDFToPNG(String inputPath, String outputPath) {
+    public static void PDFToPNG(String inputPath, String outputPath) throws Exception {
         try {
             PDDocument document = Loader.loadPDF(new File(inputPath));
             PDFRenderer pdfRenderer = new PDFRenderer(document);
@@ -214,11 +214,11 @@ public class Converter {
             }
             document.close();
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            throw e;
         }
     }
 
-    public static void PNGTextToPDFConverter(String inputPath, String outputPath, String language) {
+    public static void PNGTextToPDFConverter(String inputPath, String outputPath, String language) throws Exception{
         try {
             ITesseract tesseract = new Tesseract();
             tesseract.setDatapath("src/main/resources/tessdata");
@@ -253,8 +253,7 @@ public class Converter {
             document.save(outputFilePath);
             document.close();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            throw e;
         }
     }
 }
