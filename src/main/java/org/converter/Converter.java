@@ -18,7 +18,37 @@ import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import org.apache.pdfbox.text.PDFTextStripper;
 
+// добавить в методы которые работают с CSV файлами проверку на используемый делиметр
+
 public class Converter {
+
+    public static void main(String[] args) {
+        try {
+            convertCSVtoText("C:\\Users\\timur02\\Downloads\\Playtech Java Assignment 2024 1 (1)\\test-data\\test random data 50% validations\\input\\users.csv", "C:\\Users\\timur02\\OneDrive - Tartu Ülikool\\Dokumendid");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void convertCSVtoText(String inputPath, String outputPath){
+        File output = new File(outputPath);
+        File outputFile = new File(output, "output.txt");
+        if (!outputFile.exists()) output.mkdir();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputPath));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))){
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String convertedLine = line.replace(",", " ");
+                writer.write(convertedLine);
+                writer.newLine();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void textToPNG(String inputPath, String outputPath) throws Exception {
 

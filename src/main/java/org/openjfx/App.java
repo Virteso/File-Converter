@@ -120,6 +120,8 @@ public class App extends Application {
                                 case "PDF":
                                     Converter.SCVtoPDF(inputFilePath, outputFilePath);
                                     break;
+                                case "Text":
+                                    Converter.convertCSVtoText(inputFilePath, outputFilePath);
                                 default:
                                     break;
                             }
