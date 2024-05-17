@@ -174,6 +174,12 @@ public class App extends Application {
                                 case "PDF":
                                     Converter.textToPdf(inputFilePath, outputFilePath);
                                     break;
+                                case "CSV":
+                                    Converter.textToCSV(inputFilePath, outputFilePath);
+                                    break;
+                                case "PNG":
+                                    Converter.textToPNG(inputFilePath, outputFilePath);
+                                    break;
                                 default:
                                     break;
                             }

@@ -10,7 +10,7 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +19,129 @@ import net.sourceforge.tess4j.Tesseract;
 import org.apache.pdfbox.text.PDFTextStripper;
 
 public class Converter {
-    
+
+    public static void textToPNG(String inputPath, String outputPath) throws Exception {
+
+        StringBuilder textBuilder = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(inputPath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                textBuilder.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            throw new IOException();
+        }
+        String text = textBuilder.toString();
+
+        int imgWidth = 800;
+        int initialImgHeight = 600;
+        int margin = 20;
+
+        BufferedImage tempImg = new BufferedImage(imgWidth, initialImgHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = tempImg.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        int fontSize = 24;
+        Font font = new Font("Arial", Font.PLAIN, fontSize);
+        g2d.setFont(font);
+        FontMetrics fm = g2d.getFontMetrics();
+
+        int lineHeight = fm.getHeight();
+        int y = margin;
+        int textHeight = 0;
+        String[] lines = text.split("\n");
+        for (String line : lines) {
+            String[] words = line.split(" ");
+            StringBuilder sb = new StringBuilder();
+            for (String word : words) {
+                if (fm.stringWidth(sb.toString() + word) > imgWidth - 2 * margin) {
+                    textHeight += lineHeight;
+                    sb = new StringBuilder(word + " ");
+                } else {
+                    sb.append(word).append(" ");
+                }
+            }
+            textHeight += lineHeight;
+        }
+        int imgHeight = Math.max(initialImgHeight, textHeight + 2 * margin);
+
+        BufferedImage img = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB);
+        g2d = img.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setFont(font);
+        fm = g2d.getFontMetrics();
+
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(0, 0, imgWidth, imgHeight);
+
+        g2d.setColor(Color.BLACK);
+        y = margin;
+        for (String line : lines) {
+            if (y + lineHeight > imgHeight) {
+                break;
+            }
+            String[] words = line.split(" ");
+            StringBuilder sb = new StringBuilder();
+            for (String word : words) {
+                if (fm.stringWidth(sb.toString() + word) > imgWidth - 2 * margin) {
+                    g2d.drawString(sb.toString(), margin, y);
+                    y += lineHeight;
+                    sb = new StringBuilder(word + " ");
+                } else {
+                    sb.append(word).append(" ");
+                }
+            }
+            g2d.drawString(sb.toString(), margin, y);
+            y += lineHeight;
+        }
+        g2d.dispose();
+
+        File outputfile = new File(outputPath);
+        if (!outputfile.exists()) outputfile.mkdirs();
+        String outputFileName = outputPath + File.separator + ".png";
+        ImageIO.write(img, "png", new File(outputFileName));
+    }
+
+    public static void textToCSV(String inputPath, String outputPath) throws Exception {
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputPath));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath + File.separator + "output.csv"))) {
+            File output = new File(outputPath);
+            if (!output.exists()) output.mkdir();
+            String[] delimeters = {",", "\t", ";", " "};
+            Map<String, Integer> dilemetersCount = new HashMap<>();
+            for (String delimeter : delimeters) {
+                dilemetersCount.put(delimeter, 0);
+            }
+            String line;
+            String d = "";
+            int m = 0;
+            boolean n = true;
+            while ((line = reader.readLine()) != null) {
+                if (n) {
+                    for (String s : dilemetersCount.keySet()) {
+                        dilemetersCount.put(s, (int) line.chars().filter(ch -> ch == s.charAt(0)).count());
+                    }
+                    for (String s : dilemetersCount.keySet()) {
+                        if (dilemetersCount.get(s) > m || m ==0) {
+                            m = dilemetersCount.get(s);
+                            d = s;
+                        }
+                    }
+                    n = false;
+                }
+                String[] columns = line.split(d);
+                for (int i = 0; i < columns.length; i++) {
+                    writer.write(columns[i]);
+                    if (i < columns.length - 1) {
+                        writer.write(",");
+                    }
+                }
+                writer.newLine();
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 
     public static void textToPdf(String inputpath, String outputpath) throws Exception{
         try (BufferedReader reader = new BufferedReader(new FileReader(inputpath));
