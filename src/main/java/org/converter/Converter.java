@@ -22,15 +22,7 @@ import org.apache.pdfbox.text.PDFTextStripper;
 
 public class Converter {
 
-    public static void main(String[] args) {
-        try {
-            convertCSVtoText("C:\\Users\\timur02\\Downloads\\Playtech Java Assignment 2024 1 (1)\\test-data\\test random data 50% validations\\input\\users.csv", "C:\\Users\\timur02\\OneDrive - Tartu Ülikool\\Dokumendid");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void convertCSVtoText(String inputPath, String outputPath){
+    public static void convertCSVtoText(String inputPath, String outputPath) throws Exception{
         File output = new File(outputPath);
         File outputFile = new File(output, "output.txt");
         if (!outputFile.exists()) output.mkdir();
@@ -46,7 +38,7 @@ public class Converter {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new Exception();
         }
     }
 
