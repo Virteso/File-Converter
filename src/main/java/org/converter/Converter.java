@@ -18,8 +18,6 @@ import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import org.apache.pdfbox.text.PDFTextStripper;
 
-// добавить в методы которые работают с CSV файлами проверку на используемый делиметр
-
 public class Converter {
 
     public static void convertCSVtoText(String inputPath, String outputPath) throws Exception{
@@ -29,10 +27,29 @@ public class Converter {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(inputPath));
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))){
-
+            String[] delimeters = {",", "\t", ";", " "};
+            Map<String, Integer> delimetersCount = new HashMap<>();
+            for (String delimeter : delimeters) {
+                delimetersCount.put(delimeter, 0);
+            }
             String line;
+            String d = "";
+            int m = 0;
+            boolean n = true;
             while ((line = reader.readLine()) != null) {
-                String convertedLine = line.replace(",", " ");
+                if (n) {
+                    for (String s : delimetersCount.keySet()) {
+                        delimetersCount.put(s, (int) line.chars().filter(ch -> ch == s.charAt(0)).count());
+                    }
+                    for (String s : delimetersCount.keySet()) {
+                        if (delimetersCount.get(s) > m || m ==0) {
+                            m = delimetersCount.get(s);
+                            d = s;
+                        }
+                    }
+                    n = false;
+                }
+                String convertedLine = line.replace(d, " ");
                 writer.write(convertedLine);
                 writer.newLine();
             }
@@ -216,6 +233,12 @@ public class Converter {
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(inputpath));
 
+            String[] delimeters = {",", "\t", ";", " "};
+            Map<String, Integer> delimetersCount = new HashMap<>();
+            for (String delimeter : delimeters) {
+                delimetersCount.put(delimeter, 0);
+            }
+
             PDDocument document = new PDDocument();
             PDPage page = new PDPage();
             document.addPage(page);
@@ -233,9 +256,24 @@ public class Converter {
             String row;
             String pikimRida = "";
             double maxWidth = 0;
+            String d = "";
+            int m = 0;
+            boolean n = true;
             Map<Integer, Float> columnAndSize = new HashMap<>();
             while ((row = csvReader.readLine()) != null) {
-                String[] rida = row.split(",");
+                if (n) {
+                    for (String s : delimetersCount.keySet()) {
+                        delimetersCount.put(s, (int) row.chars().filter(ch -> ch == s.charAt(0)).count());
+                    }
+                    for (String s : delimetersCount.keySet()) {
+                        if (delimetersCount.get(s) > m || m ==0) {
+                            m = delimetersCount.get(s);
+                            d = s;
+                        }
+                    }
+                    n = false;
+                }
+                String[] rida = row.split(d);
                 for (int i = 0; i < rida.length; i++) {
                     if (columnAndSize.containsKey(i)) {
                         if (font.getStringWidth(rida[i]) > columnAndSize.get(i)) {
